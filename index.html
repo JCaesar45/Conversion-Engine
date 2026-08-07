@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conversion Engine</title>
+    <style>
+      :root {
+        --bg-primary: #0a0a0c;
+        --bg-secondary: #121216;
+        --accent: #d4af37;
+        --text-primary: #e8e8e8;
+        --text-secondary: #a0a0a0;
+        --border: #2a2a30;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 480px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 32px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        font-weight: 600;
+        letter-spacing: -0.5px;
+        color: var(--accent);
+        margin-bottom: 8px;
+      }
+
+      .header p {
+        font-size: 14px;
+        color: var(--text-secondary);
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+      }
+
+      label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 14px 16px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 15px;
+        transition: border-color 0.2s ease;
+      }
+
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+
+      button {
+        width: 100%;
+        padding: 16px;
+        background: var(--accent);
+        color: var(--bg-primary);
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          opacity 0.2s ease,
+          transform 0.1s ease;
+      }
+
+      button:hover {
+        opacity: 0.9;
+      }
+      button:active {
+        transform: scale(0.98);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .result {
+        margin-top: 24px;
+        padding: 20px;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: none;
+      }
+
+      .result.active {
+        display: block;
+      }
+
+      .result h3 {
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 12px;
+      }
+
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      .metric-value {
+        font-weight: 600;
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Algorithmic Pricing</h1>
+        <p>Dynamic evaluation and conversion optimization</p>
+      </div>
+      <form id="evaluationForm">
+        <div class="form-group">
+          <label for="capital">Initial Capital Allocation</label>
+          <input
+            type="number"
+            id="capital"
+            name="capital"
+            required
+            min="10"
+            step="1"
+          />
+        </div>
+        <div class="form-group">
+          <label for="horizon">Investment Horizon (Months)</label>
+          <input
+            type="number"
+            id="horizon"
+            name="horizon"
+            required
+            min="1"
+            max="120"
+          />
+        </div>
+        <div class="form-group">
+          <label for="riskProfile">Risk Tolerance Index</label>
+          <select id="riskProfile" name="riskProfile" required>
+            <option value="1">Conservative</option>
+            <option value="2">Moderate</option>
+            <option value="3">Aggressive</option>
+          </select>
+        </div>
+        <button type="submit" id="submitBtn">Execute Evaluation</button>
+      </form>
+      <div class="result" id="resultPanel">
+        <h3>Evaluation Output</h3>
+        <div class="metric">
+          <span>Probability Score</span>
+          <span class="metric-value" id="probScore">--</span>
+        </div>
+        <div class="metric">
+          <span>Optimized Yield</span>
+          <span class="metric-value" id="optYield">--</span>
+        </div>
+        <div class="metric">
+          <span>Final Allocation</span>
+          <span class="metric-value" id="finalAlloc">--</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("evaluationForm");
+      const resultPanel = document.getElementById("resultPanel");
+      const submitBtn = document.getElementById("submitBtn");
+
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Processing...";
+
+        const capital = parseFloat(document.getElementById("capital").value);
+        const horizon = parseInt(document.getElementById("horizon").value, 10);
+        const riskProfile = parseInt(
+          document.getElementById("riskProfile").value,
+          10
+        );
+
+        const baseYield = capital * 0.0001 * horizon;
+        const riskMultiplier = 1 + riskProfile * 0.15;
+        const optimizedYield = baseYield * riskMultiplier;
+        const probability = Math.min(
+          0.95,
+          0.5 + horizon / 100 + riskProfile * 0.1
+        );
+        const finalAllocation = capital * (1 + optimizedYield);
+
+        setTimeout(() => {
+          document.getElementById("probScore").textContent =
+            `${(probability * 100).toFixed(1)}%`;
+          document.getElementById("optYield").textContent =
+            `${optimizedYield.toFixed(2)}%`;
+          document.getElementById("finalAlloc").textContent =
+            `$${Math.round(finalAllocation).toLocaleString()}`;
+
+          resultPanel.classList.add("active");
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Execute Evaluation";
+        }, 400);
+      });
+    </script>
+  </body>
+</html>
