@@ -2,6 +2,43 @@
 
 A high-performance algorithmic pricing system built for maximum conversion. This isn't another calculator. It's a precision instrument that transforms raw inputs into actionable financial intelligence.
 
+## Project Structure
+```
+labyrinth-generalist/
+├── frontend/
+│   └── index.html
+├── backend/
+│   ├── gateway/
+│   │   ├── src/
+│   │   │   ├── index.ts
+│   │   │   ├── routes/
+│   │   │   │   └── evaluate.ts
+│   │   │   └── schemas/
+│   │   │       └── evaluation.ts
+│   │   ├── package.json
+│   │   └── tsconfig.json
+│   ├── ml-service/
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── models.py
+│   │   │   └── scoring_engine.py
+│   │   └── requirements.txt
+│   └── transaction-engine/
+│       ├── src/
+│       │   └── main/
+│       │       └── java/
+│       │           └── com/
+│       │               └── labyrinth/
+│       │                   └── pricing/
+│       │                       ├── TransactionEngine.java
+│       │                       └── TransactionController.java
+│       └── pom.xml
+├── docs/
+│   └── README.md
+├── .gitignore
+└── docker-compose.yml
+```
+
 ## Architecture
 
 The entire system runs client-side. Zero server dependencies. Zero latency. The moment a user submits their parameters, the algorithm executes and returns results in under 400 milliseconds. This is intentional. Speed converts.
