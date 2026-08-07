@@ -1,78 +1,68 @@
-# Conversion Engine
+# Labyrinth Generalist
 
-A high-performance algorithmic pricing system built for maximum conversion. This isn't another calculator. It's a precision instrument that transforms raw inputs into actionable financial intelligence.
-
-## Project Structure
-```
-labyrinth-generalist/
-├── frontend/
-│   └── index.html
-├── backend/
-│   ├── gateway/
-│   │   ├── src/
-│   │   │   ├── index.ts
-│   │   │   ├── routes/
-│   │   │   │   └── evaluate.ts
-│   │   │   └── schemas/
-│   │   │       └── evaluation.ts
-│   │   ├── package.json
-│   │   └── tsconfig.json
-│   ├── ml-service/
-│   │   ├── app/
-│   │   │   ├── main.py
-│   │   │   ├── models.py
-│   │   │   └── scoring_engine.py
-│   │   └── requirements.txt
-│   └── transaction-engine/
-│       ├── src/
-│       │   └── main/
-│       │       └── java/
-│       │           └── com/
-│       │               └── labyrinth/
-│       │                   └── pricing/
-│       │                       ├── TransactionEngine.java
-│       │                       └── TransactionController.java
-│       └── pom.xml
-├── docs/
-│   └── README.md
-├── .gitignore
-└── docker-compose.yml
-```
+Distributed algorithmic pricing and lead-scoring system with microservices architecture.
 
 ## Architecture
 
-The entire system runs client-side. Zero server dependencies. Zero latency. The moment a user submits their parameters, the algorithm executes and returns results in under 400 milliseconds. This is intentional. Speed converts.
+- **Frontend**: Single-file HTML/CSS/JavaScript application
+- **Gateway**: TypeScript API gateway with validation
+- **ML Service**: Python FastAPI service for lead scoring
+- **Transaction Engine**: Java Spring Boot service for pricing logic
 
-The interface uses a dark, minimalist aesthetic with gold accents. High contrast reduces cognitive load. Every visual element serves a purpose. There's no decoration for decoration's sake.
+## Quick Start
 
-## How It Works
+```bash
+docker-compose up --build
+```
 
-The system accepts three inputs:
+## Services
 
-Initial capital allocation (minimum $10). Investment horizon in months (1-120). Risk tolerance index (conservative, moderate, or aggressive).
+- Frontend: http://localhost:8080
+- Gateway: http://localhost:3000
+- ML Service: http://localhost:8000
+- Transaction Engine: http://localhost:8081
+```
 
-The algorithm processes these through a proprietary calculation engine that factors capital size, time horizon, and risk profile to generate three outputs: probability score, optimized yield percentage, and final allocation value.
+**.gitignore**
+```
+node_modules/
+dist/
+__pycache__/
+*.pyc
+.env
+target/
+*.class
+.DS_Store
+*.log
+```
 
-The probability calculation uses a bounded formula that caps at 95% to maintain realistic expectations. The yield calculation applies risk multipliers that scale with the selected tolerance level. The final allocation compounds the optimized yield against the initial capital.
+**docker-compose.yml**
+```yaml
+version: '3.8'
 
-## Technical Stack
+services:
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html
 
-Pure HTML5, CSS3, and vanilla JavaScript. No frameworks. No build tools. No dependencies. The entire application is a single file that runs in any modern browser.
+  gateway:
+    build: ./backend/gateway
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
 
-The CSS uses custom properties for consistent theming. The JavaScript handles form validation, computation, and DOM manipulation without external libraries. This keeps the payload minimal and execution fast.
+  ml-service:
+    build: ./backend/ml-service
+    ports:
+      - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
 
-## Performance Metrics
-
-First Contentful Paint: Under 100ms on standard connections. Time to Interactive: Immediate. Total bundle size: Approximately 8KB uncompressed.
-
-## Use Cases
-
-This system works for financial services firms that need rapid lead qualification. It works for investment platforms that want to show users projected outcomes. It works for any scenario where you need to convert user inputs into compelling financial projections without server round-trips.
-
-## Deployment
-
-Open the HTML file in any browser. That's it. No installation. No configuration. No environment setup. The system is production-ready the moment you download it.
-
-## License
-
-Use it. Modify it. Deploy it. The code is provided as-is with no warranties expressed or implied.
+  transaction-engine:
+    build: ./backend/transaction-engine
+    ports:
+      - "8081:8080"
+```
